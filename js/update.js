@@ -72,12 +72,10 @@ function updatePlayer() {
 
   if (pressed('ArrowUp')) {
     player.jumpBuffer = 8;
-    if (player.shootCd <= 0) {
-      spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
-      player.shotsFired++;
-      player.shootCd = 9;
-      sfxShoot();
-    }
+    spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
+    player.shotsFired++;
+    player.shootCd = 9;
+    sfxShoot();
   }
   if (player.jumpBuffer > 0) player.jumpBuffer--;
   player.coyote = player.onGround ? 7 : Math.max(0, player.coyote - 1);
