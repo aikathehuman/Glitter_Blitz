@@ -38,7 +38,7 @@ function loop(ts) {
         clearManagedTimeouts();
         gameState = STATE.PLAY;
       }
-      return;
+      break;
     case STATE.PLAY:
       if (pressed('Escape')) { clearManagedTimeouts(); gameState = STATE.PAUSE; }
       levelTimer += dt;
