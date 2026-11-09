@@ -793,32 +793,6 @@ function drawHostages() {
 
     drawHostageHuman(sx + 12, h.y, h.type, true, t);
 
-    // Speech bubble with "HELP!!"
-    const bubbleX = sx + 12;
-    const bubbleY = h.y - 75 + Math.sin(t * 2) * 2;
-    ctx.save();
-    ctx.fillStyle = '#ffffff';
-    ctx.beginPath();
-    ctx.ellipse(bubbleX, bubbleY, 32, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // Bubble tail
-    ctx.beginPath();
-    ctx.moveTo(bubbleX - 5, bubbleY + 15);
-    ctx.lineTo(bubbleX, bubbleY + 25);
-    ctx.lineTo(bubbleX + 5, bubbleY + 15);
-    ctx.stroke();
-    ctx.fillStyle = '#333';
-    ctx.fill();
-    // Text
-    ctx.fillStyle = '#ff4444';
-    ctx.font = 'bold 10px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('HELP!!', bubbleX, bubbleY + 4);
-    ctx.restore();
-
     ctx.fillStyle = 'rgba(0,0,0,0.25)';
     ctx.fillRect(sx + 2, h.y - 50, 20, 7);
     ctx.fillStyle = '#ffe072';
@@ -855,7 +829,7 @@ function drawHostagePrompt() {
       // Text
       ctx.fillStyle = '#ffd700';
       ctx.font = 'bold 12px monospace';
-      ctx.fillText('Premi E', sx + 12, promptY + 4);
+      ctx.fillText('Press E', sx + 12, promptY + 4);
       
       ctx.restore();
     }
