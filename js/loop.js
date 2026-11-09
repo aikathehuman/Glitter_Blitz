@@ -32,12 +32,13 @@ function loop(ts) {
       if (pressed('Space') || pressed('Enter')) { clearManagedTimeouts(); startLevel(levelIndex); }
       break;
     case STATE.INTRO:
+      if (introTimer > 0) introTimer--;
       drawIntro();
       if (pressed('Space') || pressed('Enter') || pressed('Escape')) {
         clearManagedTimeouts();
         gameState = STATE.PLAY;
       }
-      break;
+      return;
     case STATE.PLAY:
       if (pressed('Escape')) { clearManagedTimeouts(); gameState = STATE.PAUSE; }
       levelTimer += dt;

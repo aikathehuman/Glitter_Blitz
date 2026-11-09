@@ -1079,17 +1079,20 @@ function drawIntro() {
   ctx.save(); ctx.globalAlpha = a;
   ctx.fillStyle = 'rgba(0,0,0,0.55)'; ctx.fillRect(0, 0, NATIVE_W, NATIVE_H);
   ctx.translate(0, slide);
-  ctx.fillStyle = 'rgba(10,10,20,0.88)'; ctx.fillRect(110, 82, 420, 166);
-  ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2; ctx.strokeRect(110, 82, 420, 166);
+  ctx.fillStyle = 'rgba(10,10,20,0.88)'; ctx.fillRect(110, 72, 420, 186);
+  ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2; ctx.strokeRect(110, 72, 420, 186);
   ctx.textAlign = 'center';
-  ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px monospace'; ctx.fillText(`MISSION ${currentLevel.num}`, NATIVE_W / 2, 112);
-  ctx.fillStyle = '#ff69b4'; ctx.font = 'bold 26px monospace'; ctx.fillText(currentLevel.name, NATIVE_W / 2, 150);
+  ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px monospace'; ctx.fillText(`MISSIONE ${currentLevel.num}`, NATIVE_W / 2, 102);
+  ctx.fillStyle = '#ff69b4'; ctx.font = 'bold 26px monospace'; ctx.fillText(currentLevel.name, NATIVE_W / 2, 140);
   ctx.fillStyle = '#dce7ff'; ctx.font = '11px monospace';
-  ctx.fillText('Doppio salto, checkpoint, ostaggi e boss finale', NATIVE_W / 2, 176);
+  ctx.fillText(currentLevel.theme, NATIVE_W / 2, 166);
   ctx.fillStyle = '#88ffff';
-  ctx.fillText('Frecce muovi  //  Space spara  //  E libera ostaggi  //  W super', NATIVE_W / 2, 204);
+  ctx.fillText('Frecce muovi  //  Space spara  //  E libera ostaggi  //  W super', NATIVE_W / 2, 194);
   ctx.fillStyle = '#ffd166';
-  ctx.fillText(`BOSS: ${currentLevel.bossName}`, NATIVE_W / 2, 226);
+  ctx.fillText(`BOSS FINALE: ${currentLevel.bossName}`, NATIVE_W / 2, 216);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '10px monospace';
+  ctx.fillText('Premi SPAZIO o ENTER per iniziare', NATIVE_W / 2, 240);
   ctx.restore();
   ctx.textAlign = 'left';
 }

@@ -133,8 +133,8 @@ function resetTransientRuntime() {
 }
 
 const LEVELS = [
-  { num: 1, name: 'AVENUE IN FIAMME', theme: 'Ingresso morbido, salvataggi e unlock di Azure', tip: 'Livello introduttivo: alterna strada, piattaforme basse e boss set-piece.', skyA: '#200020', skyB: '#3a0a45', skyC: '#120012', bossName: 'DRAKOPTERO', width: 7000, bossTrigger: 5750 },
-  { num: 2, name: 'METRO DISTRUTTA', theme: 'Stazione fantasma, neon rotti e tunnel industriali', tip: 'Scenario sotterraneo: lampi elettrici, pilastri, binari e rottami metallici.', skyA: '#061018', skyB: '#0d2338', skyC: '#02070d', bossName: 'VOID MECHA', width: 4600, bossTrigger: 3940 }
+  { num: 1, name: 'AVENUE IN FIAMME', theme: 'Ambiente urbano in fiamme con piattaforme e salvataggi', tip: 'Livello introduttivo: alterna strada, piattaforme basse e boss set-piece.', skyA: '#200020', skyB: '#3a0a45', skyC: '#120012', bossName: 'DRAKOPTERO', width: 7000, bossTrigger: 5750 },
+  { num: 2, name: 'METRO DISTRUTTA', theme: 'Stazione metro abbandonata con neon rotti e tunnel industriali', tip: 'Scenario sotterraneo: lampi elettrici, pilastri, binari e rottami metallici.', skyA: '#061018', skyB: '#0d2338', skyC: '#02070d', bossName: 'VOID MECHA', width: 4600, bossTrigger: 3940 }
 ];
 
 const camera = { x: 0 };
