@@ -797,7 +797,7 @@ function drawHostages() {
     const bubbleX = sx + 12;
     const bubbleY = h.y - 75 + Math.sin(t * 2) * 2;
     ctx.save();
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#8c1b1b';
     ctx.beginPath();
     ctx.ellipse(bubbleX, bubbleY, 32, 18, 0, 0, Math.PI * 2);
     ctx.fill();
@@ -813,8 +813,8 @@ function drawHostages() {
     ctx.fillStyle = '#333';
     ctx.fill();
     // Text
-    ctx.fillStyle = '#ff4444';
-    ctx.font = 'bold 10px monospace';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 14px monospace';
     ctx.textAlign = 'center';
     ctx.fillText('AIUTO!!', bubbleX, bubbleY + 4);
     ctx.restore();
@@ -838,7 +838,7 @@ function drawHostagePrompt() {
     const dist = Math.hypot(dx, dy);
     
     // Show prompt when within 300 pixels (approximately 10 meters)
-    if (dist < 300) {
+    if (dist < 150) {
       const sx = h.x - camera.x;
       const promptY = h.y - 70 + Math.sin(Date.now() * 0.004) * 3;
       
