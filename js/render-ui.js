@@ -666,9 +666,13 @@ function drawAzureSpriteAt(sx, sy, opts = {}) {
   ctx.fillStyle = '#9be7ff'; ctx.fillRect(-3, -8, 6, 6);
   ctx.fillStyle = '#cfefff'; ctx.fillRect(-4, -6, 8, 5);
   ctx.fillStyle = '#ffccaa'; ctx.fillRect(-6, -20, 12, 13);
-  ctx.fillStyle = '#000'; ctx.fillRect(-4, -17, 3, 3); ctx.fillRect(1, -17, 3, 3);
-  ctx.fillStyle = '#fff'; ctx.fillRect(-3, -17, 1, 1); ctx.fillRect(2, -17, 1, 1);
-  ctx.fillStyle = '#7ed6ff'; ctx.fillRect(-2, -12, 4, 2);
+  // Sad downturned eyes for Azure
+  ctx.fillStyle = '#000'; ctx.fillRect(-4, -18, 3, 3); ctx.fillRect(1, -18, 3, 3);
+  ctx.fillStyle = '#fff'; ctx.fillRect(-3, -18, 1, 1); ctx.fillRect(2, -18, 1, 1);
+  // Sad frown mouth for Azure
+  ctx.fillStyle = '#ff6699'; ctx.fillRect(-2, -11, 4, 2);
+  ctx.fillRect(-3, -12, 2, 1);
+  ctx.fillRect(2, -12, 2, 1);
   ctx.fillStyle = '#4fa3ff'; ctx.beginPath(); ctx.arc(-5, -22, 5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(5, -22, 5, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#5bc0ff'; ctx.fillRect(-9, -20, 4, 30); ctx.fillRect(5, -20, 4, 28);
   ctx.fillStyle = '#e8fbff'; ctx.fillRect(-5, -20, 10, 2);
@@ -730,14 +734,18 @@ function drawHostageHuman(cx, groundY, type, tied, t) {
   ctx.fillRect(-7, -39, 14, 3);
   ctx.fillRect(-7, -36, 2, 4);
   ctx.fillRect(5, -36, 2, 4);
+  // Sad downturned eyes
   ctx.fillStyle = '#ffffff';
-  ctx.fillRect(-4, -35 + headTilt, 2, 2);
-  ctx.fillRect(2, -35 - headTilt, 2, 2);
+  ctx.fillRect(-4, -36 + headTilt, 2, 2);
+  ctx.fillRect(2, -36 - headTilt, 2, 2);
   ctx.fillStyle = '#18222d';
   ctx.fillRect(-3, -35 + headTilt, 1, 1);
   ctx.fillRect(2, -35 - headTilt, 1, 1);
+  // Sad frown mouth
   ctx.fillStyle = '#8b4f4f';
-  ctx.fillRect(-2, -31, 4, 1);
+  ctx.fillRect(-3, -30, 6, 1);
+  ctx.fillRect(-4, -31, 2, 1);
+  ctx.fillRect(3, -31, 2, 1);
   if (tied) {
     ctx.fillStyle = pal.rope;
     ctx.fillRect(-9 - stocky, -29, 18 + stocky * 2, 2);
@@ -756,6 +764,16 @@ function drawHostages() {
     const t = Date.now() * 0.003 + h.x * 0.01;
     const iconY = Math.sin(t * 1.3) * 2;
     ctx.save();
+
+    // Yellowish glow behind hostage to indicate friendly status
+    ctx.save();
+    ctx.shadowColor = 'rgba(255, 215, 0, 0.6)';
+    ctx.shadowBlur = 20 + Math.sin(t * 2) * 5;
+    ctx.fillStyle = 'rgba(255, 223, 128, 0.15)';
+    ctx.beginPath();
+    ctx.ellipse(sx + 12, h.y - 20, 28, 35, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
 
     if (h.deco === 'altar') {
       ctx.fillStyle = '#4a5966'; ctx.fillRect(sx - 8, h.y + 2, 38, 8);
@@ -783,6 +801,38 @@ function drawHostages() {
     ctx.fillRect(sx + 8, h.y - 52 + iconY, 8, 3);
 
     ctx.restore();
+  }
+}
+
+function drawHostagePrompt() {
+  for (const h of hostages) {
+    if (h.freed) continue;
+    const dx = Math.abs((player.x + player.w / 2) - (h.x + 12));
+    const dy = Math.abs((player.y + player.h / 2) - (h.y - 16));
+    const dist = Math.hypot(dx, dy);
+    
+    // Show prompt when within 300 pixels (approximately 10 meters)
+    if (dist < 300) {
+      const sx = h.x - camera.x;
+      const promptY = h.y - 70 + Math.sin(Date.now() * 0.004) * 3;
+      
+      ctx.save();
+      ctx.textAlign = 'center';
+      
+      // Background box
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillRect(sx + 12 - 40, promptY - 12, 80, 24);
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(sx + 12 - 40, promptY - 12, 80, 24);
+      
+      // Text
+      ctx.fillStyle = '#ffd700';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText('Press E', sx + 12, promptY + 4);
+      
+      ctx.restore();
+    }
   }
 }
 
@@ -967,6 +1017,7 @@ function drawWorld() {
   drawForegroundProps();
   drawPickups();
   drawHostages();
+  drawHostagePrompt();
   drawEnemies();
   drawBoss();
   drawBullets();
