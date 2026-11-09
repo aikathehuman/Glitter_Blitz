@@ -33,8 +33,10 @@ function loop(ts) {
       break;
     case STATE.INTRO:
       drawIntro();
-      introTimer--;
-      if (introTimer <= 0) gameState = STATE.PLAY;
+      if (pressed('Space') || pressed('Enter') || pressed('Escape')) {
+        clearManagedTimeouts();
+        gameState = STATE.PLAY;
+      }
       break;
     case STATE.PLAY:
       if (pressed('Escape')) { clearManagedTimeouts(); gameState = STATE.PAUSE; }
