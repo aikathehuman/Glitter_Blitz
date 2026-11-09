@@ -824,6 +824,9 @@ function drawHostages() {
 }
 
 function drawHostagePrompt() {
+  const freedCount = hostages.filter(h => h.freed).length;
+  if (freedCount >= 2) return;
+  
   for (const h of hostages) {
     if (h.freed) continue;
     const dx = Math.abs((player.x + player.w / 2) - (h.x + 12));

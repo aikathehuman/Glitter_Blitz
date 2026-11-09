@@ -150,6 +150,12 @@ function updatePlayer() {
     player.shootCd = 9;
     sfxShoot();
   }
+  if (pressed('ArrowUp') && player.shootCd <= 0) {
+    spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
+    player.shotsFired++;
+    player.shootCd = 9;
+    sfxShoot();
+  }
   if (pressed('KeyW') && (specialWeaponUnlocked ? player.superEnergy >= 80 : player.superShots > 0)) {
     if (specialWeaponUnlocked && levelIndex >= 1) {
       if (specialWeaponType === 'tesla' && levelIndex >= 2) {
