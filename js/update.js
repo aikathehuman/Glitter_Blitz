@@ -26,7 +26,7 @@ function verticalCollide(entity, prevBottom) {
 
 function damagePlayer(amount) {
   if (player.inv > 0 || player.respawning > 0 || gameState !== STATE.PLAY) return;
-  player.hp = Math.max(0, player.hp - amount);
+  player.hp = Math.max(0, player.hp - 1);
   player.inv = 70;
   spawnParticles(player.x + player.w / 2, player.y + player.h / 2, '#ff4444', 8);
   sfxHit();
@@ -70,7 +70,13 @@ function updatePlayer() {
     return;
   }
 
-  if (pressed('ArrowUp')) player.jumpBuffer = 8;
+  const arrowUpPressed = justPressed['ArrowUp'];
+  if (arrowUpPressed && (Keys.Space || Keys.KeyJ)) {
+    player.diagonalShotTimer = 8;
+  }
+  if (arrowUpPressed) player.jumpBuffer = 8;
+  delete justPressed['ArrowUp'];
+
   if (player.jumpBuffer > 0) player.jumpBuffer--;
   player.coyote = player.onGround ? 7 : Math.max(0, player.coyote - 1);
 
@@ -144,8 +150,10 @@ function updatePlayer() {
   player.superEnergy = Math.min(player.superMax, player.superEnergy + 0.28);
   player.superShots = Math.floor(player.superEnergy / 100);
 
+  if (player.diagonalShotTimer > 0) player.diagonalShotTimer--;
+
   if ((Keys.Space || Keys.KeyJ) && player.shootCd <= 0) {
-    if (pressed('ArrowUp')) {
+    if (player.diagonalShotTimer > 0) {
       spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
     } else {
       spawnBullet(player.x + (player.dir === 1 ? player.w + 2 : -6), player.y + player.h * 0.38, player.dir, { damage: 8, color: '#88ffff', speed: 7, size: 5 });
@@ -154,6 +162,7 @@ function updatePlayer() {
     player.shootCd = 9;
     sfxShoot();
   }
+
   if (pressed('KeyW') && (specialWeaponUnlocked ? player.superEnergy >= 80 : player.superShots > 0)) {
     if (specialWeaponUnlocked && levelIndex >= 1) {
       if (specialWeaponType === 'tesla' && levelIndex >= 2) {
@@ -626,7 +635,7 @@ function updatePickups() {
     if (p.taken) continue;
     if (overlaps({ x: player.x, y: player.y, w: player.w, h: player.h }, { x: p.x - 8, y: p.y - 8, w: 16, h: 16 })) {
       p.taken = true;
-      if (p.type === 'heal') player.hp = Math.min(player.maxHp, player.hp + 30);
+      if (p.type === 'heal') player.hp = Math.min(player.maxHp, player.hp + 2);
       if (p.type === 'super') player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
       if (p.type === 'flamethrower') {
         specialWeaponUnlocked = true;

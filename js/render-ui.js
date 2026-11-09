@@ -623,7 +623,7 @@ function checkHostageFree() {
         spawnParticles(azure.x + 8, azure.y + 8, '#7ed6ff', 16, 1.3);
       } else {
         player.stageHostages++;
-        if (h.reward === 'life') player.hp = Math.min(player.maxHp, player.hp + 35);
+        if (h.reward === 'life') player.hp = Math.min(player.maxHp, player.hp + 2);
         if (h.reward === 'ammo' || h.reward === 'glitter') player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
       }
       break;
@@ -935,34 +935,60 @@ function drawHUD() {
   ctx.fillStyle = 'rgba(6,8,18,0.74)'; ctx.fillRect(0, 0, NATIVE_W, 38);
   ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.strokeRect(0.5, 0.5, NATIVE_W - 1, 37);
 
-  const hpFrac = player.hp / player.maxHp;
-  ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 108, 10);
-  ctx.fillStyle = hpFrac > 0.5 ? '#7be9ff' : hpFrac > 0.25 ? '#ffcc33' : '#ff3355';
-  ctx.fillRect(10, 8, 108 * hpFrac, 10);
-  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 8, 108, 10);
-  ctx.fillStyle = '#ffffff'; ctx.font = '7px monospace'; ctx.fillText('HP', 12, 16);
-
-  ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 23, 108, 8);
+  ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 130, 12);
   ctx.fillStyle = specialWeaponUnlocked ? '#ff7a30' : '#7be9ff';
-  ctx.fillRect(10, 23, 108 * (player.superEnergy / player.superMax), 8);
-  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 23, 108, 8);
-  ctx.fillStyle = '#dce7ff'; ctx.fillText(specialWeaponUnlocked ? (specialWeaponType === 'tesla' ? 'TESLA' : 'FLAME') : 'GLITTER', 12, 30);
+  ctx.fillRect(10, 8, 130 * (player.superEnergy / player.superMax), 12);
+  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 8, 130, 12);
+  ctx.fillStyle = '#dce7ff'; ctx.fillText(specialWeaponUnlocked ? (specialWeaponType === 'tesla' ? 'TESLA' : 'FLAME') : 'GLITTER', 12, 18);
 
-  ctx.fillStyle = '#dce7ff'; ctx.font = '9px monospace';
-  ctx.fillText(`JUMP x${player.jumpsLeft}`, 138, 15);
-  ctx.fillText(`VITE ${Math.max(0, player.lives)}`, 138, 30);
+  const halfHearts = player.hp;
+  for (let i = 0; i < 5; i++) {
+    const x = 500 + i * 22;
+    if (halfHearts > i * 2) {
+      ctx.fillStyle = '#ff3366';
+      ctx.fillRect(x + 2, 8, 4, 4);
+      ctx.fillRect(x, 10, 2, 2);
+      ctx.fillRect(x + 6, 10, 2, 2);
+      ctx.fillRect(x + 1, 12, 8, 2);
+      ctx.fillRect(x, 14, 10, 2);
+      ctx.fillRect(x + 1, 16, 8, 2);
+      ctx.fillRect(x + 2, 18, 6, 2);
+      ctx.fillRect(x + 3, 20, 4, 2);
+      ctx.fillStyle = '#cc2952';
+      ctx.fillRect(x + 1, 18, 2, 2);
+      ctx.fillRect(x + 7, 18, 2, 2);
+      ctx.fillRect(x + 2, 20, 2, 2);
+      ctx.fillRect(x + 6, 20, 2, 2);
+      if (halfHearts > i * 2 + 1) {
+        ctx.fillStyle = '#ff3366';
+        ctx.fillRect(x + 10, 8, 4, 4);
+        ctx.fillRect(x + 8, 10, 2, 2);
+        ctx.fillRect(x + 14, 10, 2, 2);
+        ctx.fillRect(x + 9, 12, 8, 2);
+        ctx.fillRect(x + 8, 14, 10, 2);
+        ctx.fillRect(x + 9, 16, 8, 2);
+        ctx.fillRect(x + 10, 18, 6, 2);
+        ctx.fillRect(x + 11, 20, 4, 2);
+        ctx.fillStyle = '#cc2952';
+        ctx.fillRect(x + 9, 18, 2, 2);
+        ctx.fillRect(x + 15, 18, 2, 2);
+        ctx.fillRect(x + 10, 20, 2, 2);
+        ctx.fillRect(x + 14, 20, 2, 2);
+      }
+    }
+  }
 
   ctx.fillStyle = '#ffffff';
-  ctx.fillText(`SCORE ${String(score).padStart(6, '0')}`, 224, 15);
+  ctx.fillText(`SCORE ${String(score).padStart(6, '0')}`, 180, 18);
   const secs = Math.floor(levelTimer / 60);
   ctx.fillStyle = '#aab2c8';
-  ctx.fillText(`${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`, 224, 30);
+  ctx.fillText(`${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`, 180, 30);
 
   const prog = Math.min(1, player.x / currentLevel.bossTrigger);
-  ctx.fillStyle = '#1d1f28'; ctx.fillRect(318, 8, 158, 10);
-  ctx.fillStyle = '#ff69b4'; ctx.fillRect(318, 8, 158 * prog, 10);
-  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(318, 8, 158, 10);
-  ctx.fillStyle = '#fff'; ctx.font = '8px monospace'; ctx.fillText(`STAGE ${Math.floor(prog * 100)}%`, 322, 16);
+  ctx.fillStyle = '#1d1f28'; ctx.fillRect(238, 8, 158, 10);
+  ctx.fillStyle = '#ff69b4'; ctx.fillRect(238, 8, 158 * prog, 10);
+  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(238, 8, 158, 10);
+  ctx.fillStyle = '#fff'; ctx.font = '8px monospace'; ctx.fillText(`STAGE ${Math.floor(prog * 100)}%`, 242, 16);
 
   if (boss) {
     const frac = Math.max(0, boss.hp / boss.maxHp);
@@ -975,8 +1001,6 @@ function drawHUD() {
     ctx.fillStyle = '#ffcc44'; ctx.fillText('BOSS ZONE', 390, 30);
   }
 
-  ctx.fillStyle = '#aab2c8'; ctx.font = '8px monospace';
-  ctx.fillText(`L${currentLevel.num}`, 492, 16);
   if (specialWeaponUnlocked) { ctx.fillStyle = specialWeaponType === 'tesla' ? '#22d3ee' : '#ff9d5c'; ctx.fillText(specialWeaponType === 'tesla' ? 'TESLA READY' : 'FLAME READY', 516, 16); }
   if (player.hasAzure) { ctx.fillStyle = '#88aaff'; ctx.fillText('AZURE', 516, 30); }
 }

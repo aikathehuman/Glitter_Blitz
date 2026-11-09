@@ -156,7 +156,7 @@ const azure = { x: 0, y: 240, w: 18, h: 30, dir: 1, active: false, shootCooldown
 const player = {
   x: 80, y: 0, w: 22, h: 34,
   vx: 0, vy: 0, dir: 1,
-  hp: 100, maxHp: 100,
+  hp: 10, maxHp: 10,
   inv: 0,
   onGround: false,
   coyote: 0,
@@ -175,7 +175,8 @@ const player = {
   respawning: 0,
   runTapTimer: 0,
   runTapDir: 0,
-  runModeDir: 0
+  runModeDir: 0,
+  diagonalShotTimer: 0
 };
 
 function resetPlayer(full = true) {
@@ -196,6 +197,7 @@ function resetPlayer(full = true) {
   player.runTapTimer = 0;
   player.runTapDir = 0;
   player.runModeDir = 0;
+  player.diagonalShotTimer = 0;
   if (full) {
     player.hp = player.maxHp;
     player.lives = 3;
