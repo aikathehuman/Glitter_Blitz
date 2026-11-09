@@ -937,7 +937,7 @@ function drawHUD() {
 
   const hpFrac = player.hp / player.maxHp;
   ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 108, 10);
-  ctx.fillStyle = hpFrac > 0.5 ? '#44ff66' : hpFrac > 0.25 ? '#ffcc33' : '#ff3355';
+  ctx.fillStyle = hpFrac > 0.5 ? '#7be9ff' : hpFrac > 0.25 ? '#ffcc33' : '#ff3355';
   ctx.fillRect(10, 8, 108 * hpFrac, 10);
   ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 8, 108, 10);
   ctx.fillStyle = '#ffffff'; ctx.font = '7px monospace'; ctx.fillText('HP', 12, 16);
