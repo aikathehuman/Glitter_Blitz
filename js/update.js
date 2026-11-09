@@ -70,13 +70,7 @@ function updatePlayer() {
     return;
   }
 
-  if (pressed('ArrowUp')) {
-    player.jumpBuffer = 8;
-    spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
-    player.shotsFired++;
-    player.shootCd = 9;
-    sfxShoot();
-  }
+  if (pressed('ArrowUp')) player.jumpBuffer = 8;
   if (player.jumpBuffer > 0) player.jumpBuffer--;
   player.coyote = player.onGround ? 7 : Math.max(0, player.coyote - 1);
 
@@ -151,7 +145,11 @@ function updatePlayer() {
   player.superShots = Math.floor(player.superEnergy / 100);
 
   if ((Keys.Space || Keys.KeyJ) && player.shootCd <= 0) {
-    spawnBullet(player.x + (player.dir === 1 ? player.w + 2 : -6), player.y + player.h * 0.38, player.dir, { damage: 8, color: '#88ffff', speed: 7, size: 5 });
+    if (pressed('ArrowUp')) {
+      spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
+    } else {
+      spawnBullet(player.x + (player.dir === 1 ? player.w + 2 : -6), player.y + player.h * 0.38, player.dir, { damage: 8, color: '#88ffff', speed: 7, size: 5 });
+    }
     player.shotsFired++;
     player.shootCd = 9;
     sfxShoot();
