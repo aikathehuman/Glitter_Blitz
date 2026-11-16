@@ -118,6 +118,7 @@ let titleTick = 0;
 let introTimer = 0;
 let flashText = '';
 let flashTimer = 0;
+let healAnim = { x: 0, y: 0, timer: 0 };
 let score = 0;
 let levelIndex = 0;
 let levelTimer = 0;
@@ -130,6 +131,7 @@ function resetTransientRuntime() {
   clearManagedTimeouts();
   flashText = '';
   flashTimer = 0;
+  healAnim = { x: 0, y: 0, timer: 0 };
 }
 
 const LEVELS = [

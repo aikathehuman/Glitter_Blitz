@@ -635,7 +635,12 @@ function updatePickups() {
     if (p.taken) continue;
     if (overlaps({ x: player.x, y: player.y, w: player.w, h: player.h }, { x: p.x - 8, y: p.y - 8, w: 16, h: 16 })) {
       p.taken = true;
-      if (p.type === 'heal') player.hp = Math.min(player.maxHp, player.hp + 2);
+      if (p.type === 'heal') {
+        player.hp = Math.min(player.maxHp, player.hp + 2);
+        healAnim.x = player.x;
+        healAnim.y = player.y - 20;
+        healAnim.timer = 60;
+      }
       if (p.type === 'super') player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
       if (p.type === 'flamethrower') {
         specialWeaponUnlocked = true;
@@ -685,6 +690,7 @@ function updateWorld() {
     updateParticles();
     updateCamera();
     if (flashTimer > 0) flashTimer--;
+    if (healAnim.timer > 0) healAnim.timer--;
     return;
   }
   updatePlayer();
@@ -698,4 +704,5 @@ function updateWorld() {
   updateParticles();
   updateCamera();
   if (flashTimer > 0) flashTimer--;
+  if (healAnim.timer > 0) healAnim.timer--;
 }
