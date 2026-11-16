@@ -1047,11 +1047,11 @@ function drawHUD() {
   ctx.fillStyle = 'rgba(6,8,18,0.74)'; ctx.fillRect(0, 0, NATIVE_W, 44);
   ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.strokeRect(0.5, 0.5, NATIVE_W - 1, 43);
 
-  ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 130, 12);
-  ctx.fillStyle = specialWeaponUnlocked ? '#ff7a30' : '#7be9ff';
+  ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 150, 12);
+  ctx.fillStyle = specialWeaponUnlocked ? '#ff7a30' : '#cfa62d';
   ctx.fillRect(10, 8, 130 * (player.superEnergy / player.superMax), 12);
-  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 8, 130, 12);
-  ctx.fillStyle = '#dce7ff'; ctx.fillText(specialWeaponUnlocked ? (specialWeaponType === 'tesla' ? 'TESLA' : 'FLAME') : 'GLITTER', 12, 18);
+  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 8, 150, 12);
+  ctx.fillStyle = '#000000'; ctx.fillText(specialWeaponUnlocked ? (specialWeaponType === 'tesla' ? 'TESLA' : 'FLAME') : 'SUPER', 14, 17);
 
   const halfHearts = player.hp;
   for (let i = 0; i < 5; i++) {
@@ -1125,16 +1125,17 @@ function drawHUD() {
   }
 
   ctx.fillStyle = '#ffffff';
+  ctx.font = '12px monospace';
   ctx.fillText(`SCORE ${String(score).padStart(6, '0')}`, 180, 18);
   const secs = Math.floor(levelTimer / 60);
   ctx.fillStyle = '#aab2c8';
   ctx.fillText(`${String(Math.floor(secs / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`, 180, 30);
 
   const prog = Math.min(1, player.x / currentLevel.bossTrigger);
-  ctx.fillStyle = '#1d1f28'; ctx.fillRect(238, 8, 158, 10);
-  ctx.fillStyle = '#ff69b4'; ctx.fillRect(238, 8, 158 * prog, 10);
-  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(238, 8, 158, 10);
-  ctx.fillStyle = '#fff'; ctx.font = '8px monospace'; ctx.fillText(`STAGE ${Math.floor(prog * 100)}%`, 242, 16);
+  ctx.fillStyle = '#1d1f28'; ctx.fillRect(280, 8, 200, 13);
+  ctx.fillStyle = '#ff69b4'; ctx.fillRect(280, 8, 200 * prog, 13);
+  ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(280, 8, 200, 13);
+  ctx.fillStyle = '#fff'; ctx.font = '8px monospace'; ctx.fillText(`STAGE ${Math.floor(prog * 100)}%`, 285, 18);
 
   if (boss) {
     const frac = Math.max(0, boss.hp / boss.maxHp);
