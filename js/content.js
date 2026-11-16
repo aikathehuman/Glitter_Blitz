@@ -408,6 +408,7 @@ function startLevel(i) {
   buildLevel(i);
   player.stageKills = 0;
   player.stageHostages = 0;
+  player.savedHostages = 0;
   player.shotsFired = 0;
   introTimer = 110;
   gameState = STATE.INTRO;

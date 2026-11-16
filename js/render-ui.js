@@ -607,16 +607,8 @@ function checkHostageFree() {
     const dx = Math.abs((player.x + player.w / 2) - (h.x + 12));
     const dy = Math.abs((player.y + player.h / 2) - (h.y - 16));
     if (dx < 35 && dy < 40) {
-      h.freed = true;
-      h.jumping = true;
-      h.jumpTimer = 0;
-      h.jumpCount = 0;
-      h.maxJumps = 3;
-      h.jumpDelay = 0;
-      h.vy = 0;
-      sfxCheckpoint();
-      spawnParticles(h.x + 12, h.y - 20, '#ffd700', 14, 1.5);
       if (h.type === 'azure') {
+        h.freed = true;
         player.hasAzure = true;
         player.stageHostages++;
         azure.active = true;
@@ -627,8 +619,20 @@ function checkHostageFree() {
         flashText = 'AZURE COMBATTE CON TE!';
         flashTimer = 90;
         spawnParticles(azure.x + 8, azure.y + 8, '#7ed6ff', 16, 1.3);
+        // Azure doesn't jump - just starts following
       } else {
+        h.freed = true;
+        h.jumping = true;
+        h.jumpTimer = 0;
+        h.jumpCount = 0;
+        h.maxJumps = 3;
+        h.jumpDelay = 0;
+        h.vy = 0;
+        sfxCheckpoint();
+        spawnParticles(h.x + 12, h.y - 20, '#ffd700', 14, 1.5);
         player.stageHostages++;
+        if (!player.savedHostages) player.savedHostages = 0;
+        player.savedHostages++;
         if (h.reward === 'life') player.hp = Math.min(player.maxHp, player.hp + 2);
         if (h.reward === 'ammo' || h.reward === 'glitter') player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
       }
@@ -1040,8 +1044,8 @@ function drawAzure() {
 
 
 function drawHUD() {
-  ctx.fillStyle = 'rgba(6,8,18,0.74)'; ctx.fillRect(0, 0, NATIVE_W, 38);
-  ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.strokeRect(0.5, 0.5, NATIVE_W - 1, 37);
+  ctx.fillStyle = 'rgba(6,8,18,0.74)'; ctx.fillRect(0, 0, NATIVE_W, 44);
+  ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.strokeRect(0.5, 0.5, NATIVE_W - 1, 43);
 
   ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 130, 12);
   ctx.fillStyle = specialWeaponUnlocked ? '#ff7a30' : '#7be9ff';
@@ -1086,6 +1090,40 @@ function drawHUD() {
     }
   }
 
+  // Hostage saved stars below hearts (like hearts mechanism)
+  const starStartX = 500;
+  const starY = 28;
+  for (let i = 0; i < 5; i++) {
+    const x = starStartX + i * 22;
+    if ((player.savedHostages || 0) > i) {
+      ctx.fillStyle = '#ffd700';
+      // Draw star
+      ctx.beginPath();
+      const cx = x + 8;
+      const cy = starY + 6;
+      const outerRadius = 7;
+      const innerRadius = 3;
+      for (let j = 0; j < 5; j++) {
+        const angle = (j * 4 * Math.PI) / 5 - Math.PI / 2;
+        const x1 = cx + Math.cos(angle) * outerRadius;
+        const y1 = cy + Math.sin(angle) * outerRadius;
+        const angle2 = ((j * 4 + 2) * Math.PI) / 5 - Math.PI / 2;
+        const x2 = cx + Math.cos(angle2) * innerRadius;
+        const y2 = cy + Math.sin(angle2) * innerRadius;
+        if (j === 0) ctx.moveTo(x1, y1);
+        else ctx.lineTo(x1, y1);
+        ctx.lineTo(x2, y2);
+      }
+      ctx.closePath();
+      ctx.fill();
+      // Inner shine
+      ctx.fillStyle = '#fff3a2';
+      ctx.beginPath();
+      ctx.arc(cx - 1, cy - 1, 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
   ctx.fillStyle = '#ffffff';
   ctx.fillText(`SCORE ${String(score).padStart(6, '0')}`, 180, 18);
   const secs = Math.floor(levelTimer / 60);
@@ -1110,7 +1148,7 @@ function drawHUD() {
   }
 
   if (specialWeaponUnlocked) { ctx.fillStyle = specialWeaponType === 'tesla' ? '#22d3ee' : '#ff9d5c'; ctx.fillText(specialWeaponType === 'tesla' ? 'TESLA READY' : 'FLAME READY', 516, 16); }
-  if (player.hasAzure) { ctx.fillStyle = '#88aaff'; ctx.fillText('AZURE', 516, 30); }
+  if (player.hasAzure) { ctx.fillStyle = '#88aaff'; }
 }
 
 function drawFlash() {
