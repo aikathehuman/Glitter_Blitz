@@ -168,6 +168,7 @@ const player = {
   superShots: 3,
   stageKills: 0,
   stageHostages: 0,
+  savedHostages: 0,
   shotsFired: 0,
   frame: 0,
   frameTimer: 0,
@@ -205,6 +206,7 @@ function resetPlayer(full = true) {
     player.superShots = 3;
     player.stageKills = 0;
     player.stageHostages = 0;
+    player.savedHostages = 0;
     player.shotsFired = 0;
     if (!player.hasAzure) azure.active = false;
   }
