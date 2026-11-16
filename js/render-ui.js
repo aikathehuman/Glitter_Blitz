@@ -619,6 +619,8 @@ function checkHostageFree() {
         flashText = 'AZURE COMBATTE CON TE!';
         flashTimer = 90;
         spawnParticles(azure.x + 8, azure.y + 8, '#7ed6ff', 16, 1.3);
+        score += 1500;
+        scoreAnims.push({ x: h.x, y: h.y - 20, text: '+1500', timer: 60, color: '#7ed6ff' });
         // Azure doesn't jump - just starts following
       } else {
         h.freed = true;
@@ -633,6 +635,8 @@ function checkHostageFree() {
         player.stageHostages++;
         if (!player.savedHostages) player.savedHostages = 0;
         player.savedHostages++;
+        score += 1000;
+        scoreAnims.push({ x: h.x, y: h.y - 20, text: '+1000', timer: 60, color: '#ffd700' });
         if (h.reward === 'life') player.hp = Math.min(player.maxHp, player.hp + 2);
         if (h.reward === 'ammo' || h.reward === 'glitter') player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
       }
@@ -1205,19 +1209,20 @@ function drawBossIntro() {
 }
 
 function drawHealAnim() {
-  if (healAnim.timer <= 0) return;
-  const sx = healAnim.x - camera.x;
-  const progress = 1 - (healAnim.timer / 60);
-  const y = healAnim.y - progress * 40;
-  const alpha = healAnim.timer / 60;
-  
-  ctx.save();
-  ctx.globalAlpha = alpha;
-  ctx.fillStyle = '#88ff88';
-  ctx.font = 'bold 16px monospace';
-  ctx.textAlign = 'center';
-  ctx.fillText('+1', sx + 8, y);
-  ctx.restore();
+  for (const anim of scoreAnims) {
+    const sx = anim.x - camera.x;
+    const progress = 1 - (anim.timer / 60);
+    const y = anim.y - progress * 40;
+    const alpha = anim.timer / 60;
+    
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.fillStyle = anim.color;
+    ctx.font = 'bold 16px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(anim.text, sx + 8, y);
+    ctx.restore();
+  }
 }
 
 function drawWorld() {
