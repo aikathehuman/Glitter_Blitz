@@ -257,12 +257,12 @@ function buildLevel(i) {
     ];
     for (const [x, y, w] of fixedPlatforms) addPlatform(x, y, w);
     hostages = [
-      { x: 404, y: 220, type: 'muscular', reward: 'life', freed: false, deco: 'candle' },
-      { x: 928, y: 206, type: 'whale', reward: 'ammo', freed: false, deco: 'crate' },
-      { x: 1948, y: 202, type: 'muscular', reward: 'life', freed: false, deco: 'candle' },
-      { x: 3048, y: 200, type: 'azure', reward: 'companion', freed: false, deco: 'altar' },
-      { x: 3584, y: 210, type: 'whale', reward: 'glitter', freed: false, deco: 'crate' },
-      { x: 5204, y: 210, type: 'muscular', reward: 'ammo', freed: false, deco: 'candle' }
+      { x: 404, y: 220, type: 'muscular', reward: 'life', freed: false, deco: 'candle', baseY: 220 },
+      { x: 928, y: 206, type: 'whale', reward: 'ammo', freed: false, deco: 'crate', baseY: 206 },
+      { x: 1948, y: 202, type: 'muscular', reward: 'life', freed: false, deco: 'candle', baseY: 202 },
+      { x: 3048, y: 200, type: 'azure', reward: 'companion', freed: false, deco: 'altar', baseY: 200 },
+      { x: 3584, y: 210, type: 'whale', reward: 'glitter', freed: false, deco: 'crate', baseY: 210 },
+      { x: 5204, y: 210, type: 'muscular', reward: 'ammo', freed: false, deco: 'candle', baseY: 210 }
     ];
     if (!player.hasAzure) azure.active = false;
     [
@@ -294,9 +294,9 @@ function buildLevel(i) {
         addEnemy('ELECTRO_HAZARD', 500 + i * 800, GROUND_Y - 8);
     }
     hostages = [
-      { x: 670, y: 252, type: 'whale', reward: 'ammo', freed: false, deco: 'crate' },
-      { x: 1691, y: 196, type: 'muscular', reward: 'life', freed: false, deco: 'candle' },
-      { x: 3196, y: 186, type: 'whale', reward: 'glitter', freed: false, deco: 'crate' }
+      { x: 670, y: 252, type: 'whale', reward: 'ammo', freed: false, deco: 'crate', baseY: 252 },
+      { x: 1691, y: 196, type: 'muscular', reward: 'life', freed: false, deco: 'candle', baseY: 196 },
+      { x: 3196, y: 186, type: 'whale', reward: 'glitter', freed: false, deco: 'crate', baseY: 186 }
     ];
     azure.active = player.hasAzure;
     [
@@ -352,9 +352,9 @@ function buildLevel(i) {
     ];
     for (const [x, y, w] of roofPlatforms) addPlatform(x, y, w, '#5b4332');
     hostages = [
-      { x: 642, y: 192, type: 'muscular', reward: 'life', freed: false, deco: 'candle' },
-      { x: 2031, y: 150, type: 'whale', reward: 'ammo', freed: false, deco: 'crate' },
-      { x: 3260, y: 160, type: 'muscular', reward: 'glitter', freed: false, deco: 'candle' }
+      { x: 642, y: 192, type: 'muscular', reward: 'life', freed: false, deco: 'candle', baseY: 192 },
+      { x: 2031, y: 150, type: 'whale', reward: 'ammo', freed: false, deco: 'crate', baseY: 150 },
+      { x: 3260, y: 160, type: 'muscular', reward: 'glitter', freed: false, deco: 'candle', baseY: 160 }
     ];
     azure.active = player.hasAzure;
     [

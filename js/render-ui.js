@@ -608,6 +608,12 @@ function checkHostageFree() {
     const dy = Math.abs((player.y + player.h / 2) - (h.y - 16));
     if (dx < 35 && dy < 40) {
       h.freed = true;
+      h.jumping = true;
+      h.jumpTimer = 0;
+      h.jumpCount = 0;
+      h.maxJumps = 3;
+      h.jumpDelay = 0;
+      h.vy = 0;
       sfxCheckpoint();
       spawnParticles(h.x + 12, h.y - 20, '#ffd700', 14, 1.5);
       if (h.type === 'azure') {
@@ -618,7 +624,7 @@ function checkHostageFree() {
         azure.y = h.y - azure.h + 2;
         azure.vx = 0;
         azure.vy = 0;
-        flashText = 'AZURE JOINS YOU';
+        flashText = 'AZURE COMBATTE CON TE!';
         flashTimer = 90;
         spawnParticles(azure.x + 8, azure.y + 8, '#7ed6ff', 16, 1.3);
       } else {
@@ -631,7 +637,49 @@ function checkHostageFree() {
   }
 }
 
-function updateHostages() {}
+function updateHostages() {
+  for (const h of hostages) {
+    if (!h.jumping) continue;
+    
+    h.jumpDelay--;
+    if (h.jumpDelay > 0) continue;
+    
+    h.jumpTimer++;
+    
+    // Physics for jumping
+    if (h.jumpTimer < 12) {
+      h.vy = -6.5;
+    } else if (h.jumpTimer < 24) {
+      h.vy += 0.4;
+    } else {
+      h.vy += 0.5;
+    }
+    
+    h.y += h.vy;
+    
+    // Ground collision
+    if (h.y >= h.baseY) {
+      h.y = h.baseY;
+      h.vy = 0;
+      h.jumpCount++;
+      h.jumpTimer = 0;
+      
+      if (h.jumpCount >= h.maxJumps) {
+        h.jumping = false;
+        // Spawn confetti at the end
+        const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff9f43', '#a55eea'];
+        for (let i = 0; i < 20; i++) {
+          const color = colors[Math.floor(Math.random() * colors.length)];
+          const offsetX = (Math.random() - 0.5) * 40;
+          const offsetY = (Math.random() - 0.5) * 20;
+          spawnParticles(h.x + 12 + offsetX, h.y - 20 + offsetY, color, 3, 1.2, { shape: 'spark', glow: 3, size: 2 });
+        }
+      } else {
+        h.jumpDelay = 8;
+      }
+    }
+  }
+}
 
 function hostagePalette(type) {
   if (type === 'azure') {
@@ -666,13 +714,24 @@ function drawAzureSpriteAt(sx, sy, opts = {}) {
   ctx.fillStyle = '#9be7ff'; ctx.fillRect(-3, -8, 6, 6);
   ctx.fillStyle = '#cfefff'; ctx.fillRect(-4, -6, 8, 5);
   ctx.fillStyle = '#ffccaa'; ctx.fillRect(-6, -20, 12, 13);
-  // Sad downturned eyes for Azure
-  ctx.fillStyle = '#000'; ctx.fillRect(-4, -18, 3, 3); ctx.fillRect(1, -18, 3, 3);
-  ctx.fillStyle = '#fff'; ctx.fillRect(-3, -18, 1, 1); ctx.fillRect(2, -18, 1, 1);
-  // Sad frown mouth for Azure
-  ctx.fillStyle = '#ff6699'; ctx.fillRect(-2, -11, 4, 2);
-  ctx.fillRect(-3, -12, 2, 1);
-  ctx.fillRect(2, -12, 2, 1);
+  
+  if (tied) {
+    // Sad downturned eyes for Azure
+    ctx.fillStyle = '#000'; ctx.fillRect(-4, -18, 3, 3); ctx.fillRect(1, -18, 3, 3);
+    ctx.fillStyle = '#fff'; ctx.fillRect(-3, -18, 1, 1); ctx.fillRect(2, -18, 1, 1);
+    // Sad frown mouth for Azure
+    ctx.fillStyle = '#ff6699'; ctx.fillRect(-2, -11, 4, 2);
+    ctx.fillRect(-3, -12, 2, 1);
+    ctx.fillRect(2, -12, 2, 1);
+  } else {
+    // Happy eyes for Azure
+    ctx.fillStyle = '#000'; ctx.fillRect(-4, -18, 3, 3); ctx.fillRect(1, -18, 3, 3);
+    ctx.fillStyle = '#fff'; ctx.fillRect(-3, -18, 1, 1); ctx.fillRect(2, -18, 1, 1);
+    // Happy smile mouth for Azure
+    ctx.fillStyle = '#ff6699'; ctx.fillRect(-2, -11, 4, 2);
+    ctx.fillRect(-2, -10, 4, 1);
+  }
+  
   ctx.fillStyle = '#4fa3ff'; ctx.beginPath(); ctx.arc(-5, -22, 5, 0, Math.PI * 2); ctx.fill(); ctx.beginPath(); ctx.arc(5, -22, 5, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = '#5bc0ff'; ctx.fillRect(-9, -20, 4, 30); ctx.fillRect(5, -20, 4, 28);
   ctx.fillStyle = '#e8fbff'; ctx.fillRect(-5, -20, 10, 2);
@@ -692,7 +751,7 @@ function drawAzureSpriteAt(sx, sy, opts = {}) {
 function drawHostageHuman(cx, groundY, type, tied, t) {
   if (type === 'azure') {
     const bob = Math.sin(t) * 1.1;
-    drawAzureSpriteAt(cx - azure.w / 2, groundY - azure.h + 2, { dir: 1, bob, leg: 0, tied: true, shooting: false });
+    drawAzureSpriteAt(cx - azure.w / 2, groundY - azure.h + 2, { dir: 1, bob, leg: 0, tied: tied, shooting: false });
     return;
   }
 
@@ -734,18 +793,34 @@ function drawHostageHuman(cx, groundY, type, tied, t) {
   ctx.fillRect(-7, -39, 14, 3);
   ctx.fillRect(-7, -36, 2, 4);
   ctx.fillRect(5, -36, 2, 4);
-  // Sad downturned eyes
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(-4, -36 + headTilt, 2, 2);
-  ctx.fillRect(2, -36 - headTilt, 2, 2);
-  ctx.fillStyle = '#18222d';
-  ctx.fillRect(-3, -35 + headTilt, 1, 1);
-  ctx.fillRect(2, -35 - headTilt, 1, 1);
-  // Sad frown mouth
-  ctx.fillStyle = '#8b4f4f';
-  ctx.fillRect(-3, -30, 6, 1);
-  ctx.fillRect(-4, -31, 2, 1);
-  ctx.fillRect(3, -31, 2, 1);
+  
+  if (tied) {
+    // Sad downturned eyes
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-4, -36 + headTilt, 2, 2);
+    ctx.fillRect(2, -36 - headTilt, 2, 2);
+    ctx.fillStyle = '#18222d';
+    ctx.fillRect(-3, -35 + headTilt, 1, 1);
+    ctx.fillRect(2, -35 - headTilt, 1, 1);
+    // Sad frown mouth
+    ctx.fillStyle = '#8b4f4f';
+    ctx.fillRect(-3, -30, 6, 1);
+    ctx.fillRect(-4, -31, 2, 1);
+    ctx.fillRect(3, -31, 2, 1);
+  } else {
+    // Happy eyes - normal position
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(-4, -36, 2, 2);
+    ctx.fillRect(2, -36, 2, 2);
+    ctx.fillStyle = '#18222d';
+    ctx.fillRect(-3, -35, 1, 1);
+    ctx.fillRect(2, -35, 1, 1);
+    // Happy smile mouth
+    ctx.fillStyle = '#ff6b6b';
+    ctx.fillRect(-3, -30, 6, 2);
+    ctx.fillRect(-2, -29, 4, 1);
+  }
+  
   if (tied) {
     ctx.fillStyle = pal.rope;
     ctx.fillRect(-9 - stocky, -29, 18 + stocky * 2, 2);
@@ -758,11 +833,12 @@ function drawHostageHuman(cx, groundY, type, tied, t) {
 
 function drawHostages() {
   for (const h of hostages) {
-    if (h.freed) continue;
+    if (h.freed && !h.jumping) continue;
     const sx = h.x - camera.x;
     if (sx < -40 || sx > NATIVE_W + 40) continue;
     const t = Date.now() * 0.003 + h.x * 0.01;
     const iconY = Math.sin(t * 1.3) * 2;
+    const isJumping = h.jumping;
     ctx.save();
 
     // Yellowish glow behind hostage to indicate friendly status
@@ -775,49 +851,81 @@ function drawHostages() {
     ctx.fill();
     ctx.restore();
 
-    if (h.deco === 'altar') {
-      ctx.fillStyle = '#4a5966'; ctx.fillRect(sx - 8, h.y + 2, 38, 8);
-      ctx.fillStyle = '#738694'; ctx.fillRect(sx - 2, h.y - 6, 26, 8);
-      ctx.fillStyle = '#dfe8ef'; ctx.fillRect(sx + 3, h.y - 10, 4, 4); ctx.fillRect(sx + 15, h.y - 10, 4, 4);
-      ctx.fillStyle = '#7ddfff'; ctx.fillRect(sx + 4, h.y - 13 + Math.sin(t * 2) * 0.5, 2, 3); ctx.fillRect(sx + 16, h.y - 13 + Math.sin(t * 2.2) * 0.5, 2, 3);
-    } else if (h.deco === 'crate') {
-      ctx.fillStyle = '#51626f'; ctx.fillRect(sx - 6, h.y + 2, 34, 12);
-      ctx.fillStyle = '#9ab0bd'; ctx.fillRect(sx - 4, h.y + 5, 30, 2);
-      ctx.fillRect(sx - 4, h.y + 10, 30, 2);
-    } else {
-      ctx.fillStyle = '#60676f'; ctx.fillRect(sx + 2, h.y + 2, 4, 9);
-      ctx.fillRect(sx + 18, h.y + 2, 4, 9);
-      ctx.fillStyle = '#ffd9a8'; ctx.fillRect(sx + 2, h.y - 2, 4, 4); ctx.fillRect(sx + 18, h.y - 2, 4, 4);
-      ctx.fillStyle = '#ffb347'; ctx.fillRect(sx + 3, h.y - 5 + Math.sin(t * 1.7) * 0.5, 2, 3); ctx.fillRect(sx + 19, h.y - 5 + Math.sin(t * 1.9) * 0.5, 2, 3);
+    if (!isJumping) {
+      if (h.deco === 'altar') {
+        ctx.fillStyle = '#4a5966'; ctx.fillRect(sx - 8, h.y + 2, 38, 8);
+        ctx.fillStyle = '#738694'; ctx.fillRect(sx - 2, h.y - 6, 26, 8);
+        ctx.fillStyle = '#dfe8ef'; ctx.fillRect(sx + 3, h.y - 10, 4, 4); ctx.fillRect(sx + 15, h.y - 10, 4, 4);
+        ctx.fillStyle = '#7ddfff'; ctx.fillRect(sx + 4, h.y - 13 + Math.sin(t * 2) * 0.5, 2, 3); ctx.fillRect(sx + 16, h.y - 13 + Math.sin(t * 2.2) * 0.5, 2, 3);
+      } else if (h.deco === 'crate') {
+        ctx.fillStyle = '#51626f'; ctx.fillRect(sx - 6, h.y + 2, 34, 12);
+        ctx.fillStyle = '#9ab0bd'; ctx.fillRect(sx - 4, h.y + 5, 30, 2);
+        ctx.fillRect(sx - 4, h.y + 10, 30, 2);
+      } else {
+        ctx.fillStyle = '#60676f'; ctx.fillRect(sx + 2, h.y + 2, 4, 9);
+        ctx.fillRect(sx + 18, h.y + 2, 4, 9);
+        ctx.fillStyle = '#ffd9a8'; ctx.fillRect(sx + 2, h.y - 2, 4, 4); ctx.fillRect(sx + 18, h.y - 2, 4, 4);
+        ctx.fillStyle = '#ffb347'; ctx.fillRect(sx + 3, h.y - 5 + Math.sin(t * 1.7) * 0.5, 2, 3); ctx.fillRect(sx + 19, h.y - 5 + Math.sin(t * 1.9) * 0.5, 2, 3);
+      }
     }
 
-    drawHostageHuman(sx + 12, h.y, h.type, true, t);
+    drawHostageHuman(sx + 12, h.y, h.type, !isJumping, t);
 
-    // Speech bubble with "AIUTO!!"
-    const bubbleX = sx + 12;
-    const bubbleY = h.y - 75 + Math.sin(t * 2) * 2;
-    ctx.save();
-    ctx.fillStyle = '#8c1b1b';
-    ctx.beginPath();
-    ctx.ellipse(bubbleX, bubbleY, 32, 18, 0, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.strokeStyle = '#333';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-    // Bubble tail
-    ctx.beginPath();
-    ctx.moveTo(bubbleX - 5, bubbleY + 15);
-    ctx.lineTo(bubbleX, bubbleY + 25);
-    ctx.lineTo(bubbleX + 5, bubbleY + 15);
-    ctx.stroke();
-    ctx.fillStyle = '#333';
-    ctx.fill();
-    // Text
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 14px monospace';
-    ctx.textAlign = 'center';
-    ctx.fillText('AIUTO!!', bubbleX, bubbleY + 4);
-    ctx.restore();
+    // "Grazie!" text when jumping with joy
+    if (isJumping) {
+      const thanksX = sx + 12;
+      const thanksY = h.y - 75 + Math.sin(t * 2) * 2;
+      ctx.save();
+      ctx.fillStyle = '#4caf50';
+      ctx.beginPath();
+      ctx.ellipse(thanksX, thanksY, 32, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Bubble tail
+      ctx.beginPath();
+      ctx.moveTo(thanksX - 5, thanksY + 15);
+      ctx.lineTo(thanksX, thanksY + 25);
+      ctx.lineTo(thanksX + 5, thanksY + 15);
+      ctx.stroke();
+      ctx.fillStyle = '#333';
+      ctx.fill();
+      // Text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('Grazie!', thanksX, thanksY + 4);
+      ctx.restore();
+    }
+
+    // Speech bubble with "AIUTO!!" - only when tied and not jumping
+    if (!isJumping) {
+      const bubbleX = sx + 12;
+      const bubbleY = h.y - 75 + Math.sin(t * 2) * 2;
+      ctx.save();
+      ctx.fillStyle = '#8c1b1b';
+      ctx.beginPath();
+      ctx.ellipse(bubbleX, bubbleY, 32, 18, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#333';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+      // Bubble tail
+      ctx.beginPath();
+      ctx.moveTo(bubbleX - 5, bubbleY + 15);
+      ctx.lineTo(bubbleX, bubbleY + 25);
+      ctx.lineTo(bubbleX + 5, bubbleY + 15);
+      ctx.stroke();
+      ctx.fillStyle = '#333';
+      ctx.fill();
+      // Text
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 14px monospace';
+      ctx.textAlign = 'center';
+      ctx.fillText('AIUTO!!', bubbleX, bubbleY + 4);
+      ctx.restore();
+    }
 
     ctx.restore();
   }
