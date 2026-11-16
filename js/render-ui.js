@@ -1204,6 +1204,22 @@ function drawBossIntro() {
   ctx.textAlign = 'left';
 }
 
+function drawHealAnim() {
+  if (healAnim.timer <= 0) return;
+  const sx = healAnim.x - camera.x;
+  const progress = 1 - (healAnim.timer / 60);
+  const y = healAnim.y - progress * 40;
+  const alpha = healAnim.timer / 60;
+  
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = '#88ff88';
+  ctx.font = 'bold 16px monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('+1', sx + 8, y);
+  ctx.restore();
+}
+
 function drawWorld() {
   drawBackground();
   drawPlatforms();
@@ -1217,6 +1233,7 @@ function drawWorld() {
   drawPlayer();
   drawAzure();
   drawParticles();
+  drawHealAnim();
   drawHUD();
   drawFlash();
   drawBossIntro();
