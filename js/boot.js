@@ -127,11 +127,13 @@ let levelClearMessage = '';
 let statsTimer = 0;
 let lastStageStats = null;
 let campaignCleared = false;
+let superTutorialShown = false;
 function resetTransientRuntime() {
   clearManagedTimeouts();
   flashText = '';
   flashTimer = 0;
   scoreAnims = [];
+  superTutorialShown = false;
 }
 
 const LEVELS = [

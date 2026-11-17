@@ -210,14 +210,18 @@ function updatePlayer() {
 }
 
 function updateEnemies() {
+  let encounteredEnemyCount = 0;
   for (const e of enemies) {
     if (e.dead) { e.fade--; continue; }
     if (!e.active && e.x < camera.x + NATIVE_W + 120) e.active = true;
     if (!e.active) continue;
-    const t = ENEMY_TYPES[e.type];
+    
     const dx = player.x - e.x;
     const dy = player.y - e.y;
     const dist = Math.hypot(dx, dy);
+    
+    if (e.type !== 'ELECTRO_HAZARD' && dist < 400) encounteredEnemyCount++;
+    const t = ENEMY_TYPES[e.type];
     e.dir = dx >= 0 ? 1 : -1;
 
     if (e.type === 'SPARK_RAT') {
@@ -281,6 +285,12 @@ function updateEnemies() {
     if (e.frameTimer >= 8) { e.frame = (e.frame + 1) % 8; e.frameTimer = 0; }
   }
   enemies = enemies.filter(e => !e.dead || e.fade > 0);
+
+  if (!superTutorialShown && encounteredEnemyCount >= 3 && player.superEnergy >= player.superMax) {
+    superTutorialShown = true;
+    flashText = 'Premi W!';
+    flashTimer = 180;
+  }
 }
 
 function updateBoss() {
@@ -636,11 +646,24 @@ function updatePickups() {
     if (overlaps({ x: player.x, y: player.y, w: player.w, h: player.h }, { x: p.x - 8, y: p.y - 8, w: 16, h: 16 })) {
       p.taken = true;
       if (p.type === 'heal') {
-        player.hp = Math.min(player.maxHp, player.hp + 2);
-        score += 100;
-        scoreAnims.push({ x: player.x, y: player.y - 20, text: '+1UP', timer: 60, color: '#88ff88' });
+        if (player.hp >= player.maxHp) {
+          score += 300;
+          scoreAnims.push({ x: player.x, y: player.y - 20, text: '+300', timer: 60, color: '#88ff88' });
+        } else {
+          player.hp = Math.min(player.maxHp, player.hp + 2);
+          score += 100;
+          scoreAnims.push({ x: player.x, y: player.y - 20, text: '+1UP', timer: 60, color: '#88ff88' });
+        }
       }
-      if (p.type === 'super') player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
+      if (p.type === 'super') {
+        if (player.superEnergy >= player.superMax) {
+          score += 300;
+          scoreAnims.push({ x: player.x, y: player.y - 20, text: '+300', timer: 60, color: '#88ffff' });
+        } else {
+          player.superEnergy = Math.min(player.superMax, player.superEnergy + 100);
+          scoreAnims.push({ x: player.x, y: player.y - 20, text: '+SUPER!', timer: 60, color: '#88ffff' });
+        }
+      }
       if (p.type === 'flamethrower') {
         specialWeaponUnlocked = true;
         specialWeaponType = 'flame';

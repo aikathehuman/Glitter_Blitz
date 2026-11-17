@@ -958,7 +958,7 @@ function drawHostagePrompt() {
       ctx.textAlign = 'center';
       
       // Background box
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
       ctx.fillRect(sx + 12 - 40, promptY - 12, 80, 24);
       ctx.strokeStyle = '#ffd700';
       ctx.lineWidth = 2;
@@ -966,8 +966,8 @@ function drawHostagePrompt() {
       
       // Text
       ctx.fillStyle = '#ffd700';
-      ctx.font = 'bold 12px monospace';
-      ctx.fillText('Premi E', sx + 12, promptY + 4);
+      ctx.font = 'bold 14px monospace';
+      ctx.fillText('Premi E!', sx + 12, promptY + 4);
       
       ctx.restore();
     }
@@ -1048,12 +1048,12 @@ function drawAzure() {
 
 
 function drawHUD() {
-  ctx.fillStyle = 'rgba(6,8,18,0.74)'; ctx.fillRect(0, 0, NATIVE_W, 44);
+  ctx.fillStyle = 'rgba(6,8,18,0.7)'; ctx.fillRect(0, 0, NATIVE_W, 44);
   ctx.strokeStyle = 'rgba(255,255,255,0.14)'; ctx.strokeRect(0.5, 0.5, NATIVE_W - 1, 43);
 
   ctx.fillStyle = '#1d1f28'; ctx.fillRect(10, 8, 150, 12);
   ctx.fillStyle = specialWeaponUnlocked ? '#ff7a30' : '#cfa62d';
-  ctx.fillRect(10, 8, 130 * (player.superEnergy / player.superMax), 12);
+  ctx.fillRect(10, 8, 150 * (player.superEnergy / player.superMax), 12);
   ctx.strokeStyle = '#8e93a6'; ctx.strokeRect(10, 8, 150, 12);
   ctx.fillStyle = '#000000'; ctx.fillText(specialWeaponUnlocked ? (specialWeaponType === 'tesla' ? 'TESLA' : 'FLAME') : 'SUPER', 14, 17);
 
@@ -1158,13 +1158,19 @@ function drawHUD() {
 
 function drawFlash() {
   if (flashTimer <= 0 || bossIntroTimer > 0) return;
+  if (Keys.KeyW) { flashTimer = 0; return; }
   ctx.save();
   ctx.globalAlpha = Math.min(1, flashTimer / 24);
-  ctx.fillStyle = 'rgba(0,0,0,0.76)';
-  ctx.fillRect(170, 70, 300, 48);
-  ctx.strokeStyle = '#ffd700'; ctx.strokeRect(170, 70, 300, 48);
-  ctx.fillStyle = '#fff'; ctx.font = 'bold 16px monospace'; ctx.textAlign = 'center';
-  ctx.fillText(flashText, NATIVE_W / 2, 100);
+  
+  const playerScreenX = player.x - camera.x;
+  const promptX = playerScreenX + player.w / 2;
+  const promptY = player.y - 50;
+  
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+  ctx.fillRect(promptX - 40, promptY - 12, 80, 24);
+  ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2; ctx.strokeRect(promptX - 40, promptY - 12, 80, 24);
+  ctx.fillStyle = '#ffd700'; ctx.font = 'bold 14px monospace'; ctx.textAlign = 'center';
+  ctx.fillText(flashText, promptX, promptY + 4);
   ctx.restore();
   ctx.textAlign = 'left';
 }
