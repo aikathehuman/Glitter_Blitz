@@ -616,8 +616,6 @@ function checkHostageFree() {
         azure.y = h.y - azure.h + 2;
         azure.vx = 0;
         azure.vy = 0;
-        flashText = 'AZURE COMBATTE CON TE!';
-        flashTimer = 90;
         spawnParticles(azure.x + 8, azure.y + 8, '#7ed6ff', 16, 1.3);
         score += 1500;
         scoreAnims.push({ x: h.x, y: h.y - 20, text: '+1500', timer: 60, color: '#7ed6ff' });
@@ -1004,31 +1002,34 @@ function updateAzure() {
 
   azure.shootCooldown--;
   if (azure.stunned <= 0 && azure.shootCooldown <= 0) {
-    let nearest = null;
-    let minDist = 260;
-    for (const e of enemies) {
-      if (e.dead) continue;
-      const ex = e.x + e.w * 0.5;
-      const ey = e.y + e.h * 0.5;
-      const d = Math.hypot(ex - (azure.x + azure.w * 0.5), ey - (azure.y + 12));
-      if (d < minDist) { nearest = e; minDist = d; }
-    }
-    if (nearest) {
-      const shotX = azure.x + azure.w * 0.5;
-      const shotY = azure.y + 12;
-      const targetX = nearest.x + nearest.w * 0.5;
-      const targetY = nearest.y + nearest.h * 0.5;
-      const aimDx = targetX - shotX;
-      const aimDy = targetY - shotY;
-      const mag = Math.max(1, Math.hypot(aimDx, aimDy));
-      const dir = aimDx >= 0 ? 1 : -1;
-      spawnBullet(shotX + (dir === 1 ? 6 : -6), shotY, dir, { speed: 7.2, damage: 8, size: 3, life: 68, enemy: false, super: false, color: '#7ed6ff', vx: (aimDx / mag) * 7.2, vy: (aimDy / mag) * 7.2 });
-      if (minDist < 150) {
-        spawnBullet(shotX + (dir === 1 ? 6 : -6), shotY + 2, dir, { speed: 6.4, damage: 6, size: 3, life: 56, enemy: false, super: false, color: '#b5f0ff', vx: (aimDx / mag) * 6.4, vy: (aimDy / mag) * 6.4 + 0.18 });
+    const hasActiveEnemy = enemies.some(e => e.active && !e.dead);
+    if (hasActiveEnemy) {
+      let nearest = null;
+      let minDist = 9000;
+      for (const e of enemies) {
+        if (e.dead || !e.active) continue;
+        const ex = e.x + e.w * 0.5;
+        const ey = e.y + e.h * 0.5;
+        const dx = ex - (azure.x + azure.w * 0.5);
+        const dy = ey - (azure.y + 12);
+        const d = Math.hypot(dx, dy);
+        const inFront = (azure.dir === 1 && dx > 0) || (azure.dir === -1 && dx < 0);
+        if (inFront && d < minDist) { nearest = e; minDist = d; }
       }
-      spawnParticles(shotX, shotY, '#7ed6ff', 4, 0.4, { shape: 'spark', glow: 6, size: 2 });
-      azure.shootCooldown = minDist < 150 ? 24 : 32;
-      sfxShoot();
+      if (nearest) {
+        const shotX = azure.x + azure.w * 0.5;
+        const shotY = azure.y + 12;
+        const targetX = nearest.x + nearest.w * 0.5;
+        const targetY = nearest.y + nearest.h * 0.5;
+        const aimDx = targetX - shotX;
+        const aimDy = targetY - shotY;
+        const mag = Math.max(1, Math.hypot(aimDx, aimDy));
+        const dir = aimDx >= 0 ? 1 : -1;
+        spawnBullet(shotX + (dir === 1 ? 6 : -6), shotY, dir, { speed: 8, damage: 12, size: 5, life: 90, enemy: false, super: false, color: '#ff69b4', vx: (aimDx / mag) * 8, vy: (aimDy / mag) * 8 });
+        spawnParticles(shotX, shotY, '#69ff9e', 6, 0.6, { shape: 'spark', glow: 8, size: 2 });
+        azure.shootCooldown = 120;
+        sfxShoot();
+      }
     }
   }
 
