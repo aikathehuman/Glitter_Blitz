@@ -215,12 +215,41 @@ const ENEMY_TYPES = {
       ctx.fillStyle = '#ffcf5a'; ctx.fillRect(-1, -14 + flick, 2, 3);
       ctx.restore();
     }
+  },
+  BAT: {
+    w: 24, h: 20, hp: 18, speed: 1.5, color: '#6600cc', score: 80, damage: 10, shootRange: 0, chaseRange: 350, flying: true,
+    draw(e, sx, sy) {
+      ctx.save(); ctx.translate(sx + 12, sy + 10);
+      if (e.dir === -1) ctx.scale(-1, 1);
+      const wingFlap = e.sleeping ? 0 : Math.sin(e.frame * 0.4) * 8;
+      ctx.fillStyle = '#6600cc';
+      ctx.beginPath(); ctx.ellipse(-10 + wingFlap, 2, 10, 6, -0.3, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(10 - wingFlap, 2, 10, 6, 0.3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#000';
+      ctx.beginPath(); ctx.ellipse(0, 4, 6, 5, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#ff66cc';
+      ctx.beginPath(); ctx.moveTo(-6, -2); ctx.lineTo(-3, -6); ctx.lineTo(0, -2); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(0, -2); ctx.lineTo(3, -6); ctx.lineTo(6, -2); ctx.fill();
+      ctx.fillStyle = '#ff0000';
+      ctx.beginPath(); ctx.arc(-2, 0, 2, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.arc(2, 0, 2, 0, Math.PI * 2); ctx.fill();
+      if (e.sleeping) {
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(-3, 0, 6, 2);
+      }
+      ctx.restore();
+    }
   }
 };
 
 function makeEnemy(type, x, y) {
   const t = ENEMY_TYPES[type];
-  return { type, x, y, w: t.w, h: t.h, hp: t.hp, maxHp: t.hp, vx: 0, vy: 0, dir: -1, active: false, dead: false, fade: 0, shootCd: 30 + Math.random() * 40, frame: 0, frameTimer: 0 };
+  const enemy = { type, x, y, w: t.w, h: t.h, hp: t.hp, maxHp: t.hp, vx: 0, vy: 0, dir: -1, active: false, dead: false, fade: 0, shootCd: 30 + Math.random() * 40, frame: 0, frameTimer: 0 };
+  if (type === 'BAT') {
+    enemy.sleeping = true;
+    enemy.baseY = y;
+  }
+  return enemy;
 }
 
 function buildLevel(i) {
@@ -266,11 +295,11 @@ function buildLevel(i) {
     ];
     if (!player.hasAzure) azure.active = false;
     [
-      ['PLUSH_ZOMBIE', 300, groundY('PLUSH_ZOMBIE')], ['DOLL_FLYING', 560, 162], ['VOODOO_DOLL', 860, groundY('VOODOO_DOLL')],
-      ['PLUSH_ZOMBIE', 1200, groundY('PLUSH_ZOMBIE')], ['BEAR_ZOMBIE', 1540, groundY('BEAR_ZOMBIE')], ['DOLL_FLYING', 1860, 148],
-      ['RED_DOLL', 2180, groundY('RED_DOLL')], ['VOODOO_DOLL', 2520, groundY('VOODOO_DOLL')], ['PLUSH_ZOMBIE', 2860, groundY('PLUSH_ZOMBIE')],
-      ['DOLL_FLYING', 3180, 152], ['BEAR_ZOMBIE', 3440, groundY('BEAR_ZOMBIE')], ['PLUSH_ZOMBIE', 3920, groundY('PLUSH_ZOMBIE')],
-      ['VOODOO_DOLL', 4260, groundY('VOODOO_DOLL')], ['DOLL_FLYING', 4580, 154], ['RED_DOLL', 4960, groundY('RED_DOLL')], ['BEAR_ZOMBIE', 5320, groundY('BEAR_ZOMBIE')]
+      ['PLUSH_ZOMBIE', 300, groundY('PLUSH_ZOMBIE')], ['BAT', 620, 260], ['DOLL_FLYING', 560, 162], ['VOODOO_DOLL', 860, groundY('VOODOO_DOLL')],
+      ['PLUSH_ZOMBIE', 1200, groundY('PLUSH_ZOMBIE')], ['BAT', 1160, 266], ['BEAR_ZOMBIE', 1540, groundY('BEAR_ZOMBIE')], ['DOLL_FLYING', 1860, 148],
+      ['RED_DOLL', 2180, groundY('RED_DOLL')], ['BAT', 2200, 278], ['VOODOO_DOLL', 2520, groundY('VOODOO_DOLL')], ['PLUSH_ZOMBIE', 2860, groundY('PLUSH_ZOMBIE')],
+      ['DOLL_FLYING', 3180, 152], ['BAT', 3300, 272], ['BEAR_ZOMBIE', 3440, groundY('BEAR_ZOMBIE')], ['PLUSH_ZOMBIE', 3920, groundY('PLUSH_ZOMBIE')],
+      ['VOODOO_DOLL', 4260, groundY('VOODOO_DOLL')], ['BAT', 4380, 266], ['DOLL_FLYING', 4580, 154], ['RED_DOLL', 4960, groundY('RED_DOLL')], ['BEAR_ZOMBIE', 5320, groundY('BEAR_ZOMBIE')]
     ].forEach(([t,x,y]) => addEnemy(t,x,y));
     pickups = [
       { type: 'heal', reward: 'life', x: 520, y: 186, taken: false },

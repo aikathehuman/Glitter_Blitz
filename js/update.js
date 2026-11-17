@@ -224,7 +224,24 @@ function updateEnemies() {
     const t = ENEMY_TYPES[e.type];
     e.dir = dx >= 0 ? 1 : -1;
 
-    if (e.type === 'SPARK_RAT') {
+    if (e.type === 'BAT') {
+      if (e.sleeping) {
+        if (dist < t.chaseRange) {
+          e.sleeping = false;
+        }
+      } else {
+        const desiredY = player.y - 150;
+        e.vx += Math.sign(dx) * 0.1;
+        e.vy += (desiredY > e.y ? 0.12 : -0.08);
+        e.vx *= 0.92;
+        e.vy *= 0.92;
+        e.vx = Math.max(-t.speed, Math.min(t.speed, e.vx));
+        e.vy = Math.max(-1.5, Math.min(1.5, e.vy));
+        e.x += e.vx;
+        e.y += e.vy;
+        e.y = Math.max(80, Math.min(GROUND_Y - 50, e.y));
+      }
+    } else if (e.type === 'SPARK_RAT') {
       const rushBoost = dist < t.chaseRange ? 1.35 : 0;
       e.vx = dist < t.chaseRange ? e.dir * t.speed * rushBoost : 0;
       e.vy += 0.28;
