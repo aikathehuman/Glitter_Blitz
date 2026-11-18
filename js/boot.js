@@ -272,7 +272,8 @@ function spawnBullet(x, y, dir, opts = {}) {
     vx: (opts.speed || 7) * dir,
     vy: opts.vy || 0,
     damage: opts.damage || 8,
-    size: opts.size || 5,
+    size: 3,
+    length: 20,
     life: opts.life || 60,
     enemy: !!opts.enemy,
     super: !!opts.super,
@@ -293,15 +294,18 @@ function drawBullets() {
     const sx = b.x - camera.x;
     if (sx < -30 || sx > NATIVE_W + 30) continue;
     ctx.save();
+    ctx.translate(sx, b.y);
+    const angle = Math.atan2(b.vy, b.vx);
+    ctx.rotate(angle);
     ctx.fillStyle = b.color;
     if (b.super) {
       ctx.shadowColor = b.color;
       ctx.shadowBlur = 8;
-      ctx.fillRect(sx - b.size / 2, b.y - b.size / 2, b.size + 5, b.size + 2);
+      ctx.fillRect(-b.length / 2, -b.size / 2, b.length + 5, b.size + 2);
       ctx.fillStyle = '#fff7aa';
-      ctx.fillRect(sx + b.size, b.y - 1, 3, 3);
+      ctx.fillRect(b.length, -1, 3, 3);
     } else {
-      ctx.fillRect(sx - b.size / 2, b.y - b.size / 2, b.size, b.size);
+      ctx.fillRect(-b.length / 2, -b.size / 2, b.length, b.size);
     }
     ctx.restore();
   }
