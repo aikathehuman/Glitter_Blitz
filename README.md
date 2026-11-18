@@ -1,6 +1,6 @@
 ## Live Demo
 
-Link: **[Open Live Demo](https://aikathehuman.github.io/Glitter_Blitz/)**
+Link: **[Glitter Blitz](https://aikathehuman.github.io/Glitter_Blitz/)**
 
 # Documentazione tecnica — Glitter Blitz Demo
 
