@@ -342,7 +342,7 @@ function updateBoss() {
     }
 
     const hpFrac = boss.hp / boss.maxHp;
-    const newPhase = hpFrac <= 0.22 ? 3 : hpFrac <= 0.55 ? 2 : 1;
+    const newPhase = hpFrac <= 0.35 ? 3 : hpFrac <= 0.65 ? 2 : 1;
     if (newPhase !== boss.phase) {
       boss.phase = newPhase;
       boss.enragedFlash = 45;

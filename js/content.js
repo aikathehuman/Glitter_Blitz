@@ -217,7 +217,7 @@ const ENEMY_TYPES = {
     }
   },
   BAT: {
-    w: 24, h: 20, hp: 18, speed: 1.5, color: '#6600cc', score: 80, damage: 10, shootRange: 0, chaseRange: 350, flying: true,
+    w: 24, h: 20, hp: 11, speed: 1.5, color: '#6600cc', score: 80, damage: 10, shootRange: 0, chaseRange: 350, flying: true,
     draw(e, sx, sy) {
       ctx.save(); ctx.translate(sx + 12, sy + 10);
       if (e.dir === -1) ctx.scale(-1, 1);
@@ -451,7 +451,7 @@ function spawnBoss() {
   flashTimer = 130;
   if (levelIndex === 0) {
     boss = {
-      kind: 'drakoptero', x: 5960, y: 96, w: 156, h: 104, hp: 760, maxHp: 760,
+      kind: 'drakoptero', x: 5960, y: 96, w: 156, h: 104, hp: 500, maxHp: 500,
       phase: 1, active: true, dead: false, vx: 1.8, vy: 0, dir: -1,
       attackTimer: 0, attackType: 0, frame: 0, frameTimer: 0,
       rotorAngle: 0, deathTimer: 0, rewardDropped: false, enragedFlash: 0, dashTimer: 0
