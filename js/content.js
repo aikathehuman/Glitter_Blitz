@@ -451,7 +451,7 @@ function spawnBoss() {
   flashTimer = 130;
   if (levelIndex === 0) {
     boss = {
-      kind: 'drakoptero', x: 5960, y: 96, w: 156, h: 104, hp: 500, maxHp: 500,
+      kind: 'drakoptero', x: 5960, y: 96, w: 156, h: 104, hp: 100, maxHp: 80, // Cambiato per tester, orig. value: 500
       phase: 1, active: true, dead: false, vx: 1.8, vy: 0, dir: -1,
       attackTimer: 0, attackType: 0, frame: 0, frameTimer: 0,
       rotorAngle: 0, deathTimer: 0, rewardDropped: false, enragedFlash: 0, dashTimer: 0

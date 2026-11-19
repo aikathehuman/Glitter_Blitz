@@ -106,7 +106,7 @@ function updatePlayer() {
 
   const runningRight = Keys.ArrowRight && player.runModeDir === 1;
   const runningLeft = Keys.ArrowLeft && player.runModeDir === -1;
-  const moveMax = (runningRight || runningLeft) ? 3.8 : 2.8;
+  const moveMax = (runningRight || runningLeft) ? 6.8 : 2.8; // orig 3.8 : 2.8
   const moveAccel = (runningRight || runningLeft) ? 0.42 : 0.34;
   const moveDrag = player.onGround ? 0.78 : 0.92;
 
@@ -316,20 +316,24 @@ function updateBoss() {
   if (boss.kind === 'drakoptero') {
     if (!boss.active) return;
     if (boss.dead) {
-      if (boss.deathTimer > 36) boss.deathTimer--;
+      if (boss.deathTimer > 60) boss.deathTimer--;
       boss.rotorAngle += 0.35;
       boss.y += Math.sin(levelTimer * 0.12) * 0.6;
-      if (!boss.rewardDropped && boss.deathTimer === 120) {
-        pickups.push({ x: boss.x + 56, y: boss.y + 56, type: 'flamethrower', reward: 'ability', taken: false, special: true });
+      if (!boss.rewardDropped && boss.deathTimer === 60) {
+              pickups.push({ x: boss.x + 56, y: boss.y + 56, type: 'flamethrower', reward: 'ability', taken: false, special: true });
         boss.rewardDropped = true;
-      }
-      if (boss.deathTimer <= 36) {
+      } //tutti 200 va cambiato a 240
+      if (boss.deathTimer <= 60) {
         bossDefeated = true;
         bossArenaLocked = false;
         boss = null;
         return;
       }
-      if (boss.deathTimer % 10 === 0) spawnParticles(boss.x + 40 + Math.random() * 70, boss.y + 20 + Math.random() * 50, '#ff6600', 8);
+      if (boss.deathTimer % 8 === 0) {
+        const colors = ['#ff03ee', '#1cfff7', '#ffcf24'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        spawnParticles(player.x + player.w / 2 + Math.random() * 60 - 30, player.y - 20 + Math.random() * 40, color, 40);
+      }
       return;
     }
 
@@ -622,7 +626,7 @@ function updateCombat() {
           resetTransientRuntime();
           if (boss.kind === 'drakoptero') {
             boss.dead = true;
-            boss.deathTimer = 180;
+            boss.deathTimer = 320;
             spawnParticles(boss.x + 60, boss.y + 40, '#ff6600', 40);
             spawnParticles(boss.x + 60, boss.y + 40, '#ffd700', 30);
             stopBGMusic();

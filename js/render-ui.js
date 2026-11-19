@@ -327,9 +327,9 @@ function drawBoss() {
   const sy = boss.y;
 
   if (boss.kind === 'drakoptero') {
-    if (!boss.active || (boss.dead && boss.deathTimer <= 0)) return;
+    if (!boss.active || (boss.dead && boss.deathTimer <= 60)) return;
     ctx.save();
-    if (boss.dead) ctx.globalAlpha = boss.deathTimer / 180;
+    if (boss.dead) ctx.globalAlpha = boss.deathTimer / 320;
     if (boss.phase >= 2) { ctx.shadowColor = boss.phase === 3 ? '#ff2200' : '#ff4400'; ctx.shadowBlur = boss.phase === 3 ? 22 : 14; }
 
     const bodyMain = boss.phase === 3 ? '#c51f00' : boss.phase === 2 ? '#cc2200' : '#2d6b2d';
