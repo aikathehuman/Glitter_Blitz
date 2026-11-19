@@ -105,12 +105,12 @@ const ENEMY_TYPES = {
     }
   },
   ELECTRO_HAZARD: {
-    w: 32, h: 8, hp: 999, speed: 0, color: '#22d3ee', score: 0, damage: 15, shootRange: 0, chaseRange: 0,
+    w: 52, h: 8, hp: 999, speed: 0, color: '#b7ff00', score: 0, damage: 15, shootRange: 0, chaseRange: 0,
     draw(e, sx, sy) {
-      ctx.fillStyle = '#22d3ee';
-      ctx.fillRect(sx, sy, 32, 8);
+      ctx.fillStyle = '#b7ff00';
+      ctx.fillRect(sx, sy, 52, 8);
       ctx.fillStyle = '#fff';
-      if (Math.sin(e.frame * 0.5) > 0) ctx.fillRect(sx + 4, sy + 2, 24, 4);
+      if (Math.sin(e.frame * 0.5) > 0) ctx.fillRect(sx + 4, sy + 4, 44, 4);
     }
   },
   SIGNAL_WITCH: {
@@ -162,7 +162,7 @@ const ENEMY_TYPES = {
     }
   },
   RAIL_DRONE: {
-    w: 18, h: 18, hp: 38, speed: 1.0, color: '#66ddff', score: 130, damage: 15, shootRange: 230, chaseRange: 250, flying: true,
+    w: 18, h: 18, hp: 11, speed: 1.3, color: '#66ddff', score: 130, damage: 15, shootRange: 230, chaseRange: 250, flying: true,
     draw(e, sx, sy) {
       ctx.save(); ctx.translate(sx + 9, sy + 9);
       const spin = Math.sin(e.frame * 0.4) * 2;

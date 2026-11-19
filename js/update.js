@@ -153,10 +153,11 @@ function updatePlayer() {
   if (player.diagonalShotTimer > 0) player.diagonalShotTimer--;
 
   if ((Keys.Space || Keys.KeyJ) && player.shootCd <= 0) {
+    const bulletColor = levelIndex === 1 ? '#ffd700' : '#88ffff';
     if (player.diagonalShotTimer > 0) {
-      spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: '#88ffff', speed: 7, size: 5, vy: -7 });
+      spawnBullet(player.x + player.w / 2 - 2.5, player.y - 6, 0, { damage: 8, color: bulletColor, speed: 7, size: 5, vy: -7 });
     } else {
-      spawnBullet(player.x + (player.dir === 1 ? player.w + 2 : -6), player.y + player.h * 0.38, player.dir, { damage: 8, color: '#88ffff', speed: 7, size: 5 });
+      spawnBullet(player.x + (player.dir === 1 ? player.w + 2 : -6), player.y + player.h * 0.38, player.dir, { damage: 8, color: bulletColor, speed: 7, size: 5 });
     }
     player.shotsFired++;
     player.shootCd = 9;
