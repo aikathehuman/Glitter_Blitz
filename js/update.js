@@ -106,7 +106,7 @@ function updatePlayer() {
 
   const runningRight = Keys.ArrowRight && player.runModeDir === 1;
   const runningLeft = Keys.ArrowLeft && player.runModeDir === -1;
-  const moveMax = (runningRight || runningLeft) ? 6.8 : 2.8; // orig 3.8 : 2.8
+  const moveMax = (runningRight || runningLeft) ? 4 : 2.8;
   const moveAccel = (runningRight || runningLeft) ? 0.42 : 0.34;
   const moveDrag = player.onGround ? 0.78 : 0.92;
 
